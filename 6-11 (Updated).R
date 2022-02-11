@@ -29,10 +29,12 @@ test_matrix <- model.matrix(crim~., data=Boston[-train,])
 
 val.errors <- rep(NA,13)
 for (i in 1:13) {
-  coefi <- coef(best_subset,id=i)
-  pred <- test_matrix[,names(coefi)] %*% coefi
-  val.errors[i] <- mean((Boston$crim[-train]-pred)^2)
+  coefi <- coef(best_subset,id=i) # Extract the formula used when we called regsubsets()
+  pred <- test_matrix[,names(coefi)] %*% coefi # Extract the coefficients of the ith model
+  val.errors[i] <- mean((Boston$crim[-train]-pred)^2) #MSE for each model
 }
+
+# P.S.: %*% is a multiplication operator for matrices
 
 which.min(val.errors)
 
