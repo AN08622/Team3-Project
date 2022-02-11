@@ -29,10 +29,12 @@ test_matrix <- model.matrix(crim~., data=Boston[-train,])
 
 val.errors <- rep(NA,13)
 for (i in 1:13) {
-  coefi <- coef(best_subset,id=i)
-  pred <- test_matrix[,names(coefi)] %*% coefi
-  val.errors[i] <- mean((Boston$crim[-train]-pred)^2)
+  coefi <- coef(best_subset,id=i) # Extract the formula used when we called regsubsets()
+  pred <- test_matrix[,names(coefi)] %*% coefi # Extract the coefficients of the ith model
+  val.errors[i] <- mean((Boston$crim[-train]-pred)^2) #MSE for each model
 }
+
+# P.S.: %*% is a multiplication operator for matrices
 
 which.min(val.errors)
 
@@ -140,13 +142,30 @@ barplot(sort(errors, decreasing = F))
 
 #MSE: 67.21199
 
+#########Model to see the best subset
+errors <- c(best_subset_mse, best_subset_mse_cv, lasso.error, ridge.error, pcr.error)
+names(errors) <- c("best_subset_mse", "best_subset_mse_cv", "lasso.error", "ridge.error", "pcr.error")
+barplot(sort(errors, decreasing = F))
+#Picking lowest mse model: which is best subset MSE
+
+
+# (c) Does your chosen model involve all of the features in the data
+# set? Why or why not?
+
+########Best Subset Mode info
+
+#MSE: 67.21199
+
 #No, The dataset had 12 variables (excluding crime) and we have 9 variables
-#as mentioned below
+#as mentioned below. Although its MSE was similar to the full 13 variable model,
+#the 9 variables model was revealing similar MSE. Hence to follow the parsimonius 
+#principle, the model with similar success rate but with least variables was chosen
 
 # (Intercept)          zn       indus         nox         dis         rad 
 # 17.91831317  0.04007497 -0.10561950 -8.58235521 -0.84508484  0.49883640 
 # ptratio       black       lstat        medv 
-# -0.22308937 -0.01410997  0.15806233 -0.14477712  
+# -0.22308937 -0.01410997  0.15806233 -0.14477712 
+
 
 
 
